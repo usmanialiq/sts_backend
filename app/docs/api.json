@@ -1,0 +1,91 @@
+{
+    "auth": {
+        "login": {
+            "route": "/api/login",
+            "type": "POST",
+            "auth": "not required",
+            "body": {
+                "username": "johndoe",
+                "password": "test123"
+            },
+            "response": {
+                "loginSuccess": true,
+                "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkMzNlOTYzNmY0MjBmMTNkMGZmYmRkZCIsIm5hbWUiOiJKb2huIERvZSIsImlhdCI6MTU2MzY5MzU4OCwiZXhwIjoxNTYzNzc5OTg4fQ.V74hSfzvHM0ub-X6XHUZGE4VJFZXvy71CGhKxkEWIDI"
+            },
+            "status": 200
+        },
+        "register": {
+            "route": "/api/register",
+            "type": "POST",
+            "auth": "not required",
+            "body": {
+                "name": "John Doe",
+                "email": "johndoe@gmail.com",
+                "username": "johndoe",
+                "password": "test123",
+                "password2": "test123",
+                "contact": "92300000000",
+                "securityQ": "Which city you were born?",
+                "securityA": "Karachi"
+            },
+            "response": {
+                "success": "Account has been successfully created. Kindly Login!"
+            },
+            "status": 201
+        }
+    },
+    "users": {
+        "all": {
+            "route": "/api/users",
+            "type": "GET",
+            "auth": "required",
+            "desc": "Get all the users",
+            "response": {
+                "found": 1,
+                "users": [
+                    {
+                        "privilege": "regular",
+                        "createdAt": 1563682844209,
+                        "_id": "5d33e9636f420f13d0ffbddd",
+                        "name": "John Doe",
+                        "email": "johndoe@gmail.com",
+                        "username": "johndoe",
+                        "password": "$2a$10$YQJhWgX7R0w74.UyoFKs2.JEcKlUNN0sIkttgi6x5h8Z04HF3P91C",
+                        "contact": 92300000000,
+                        "securityQuestion": "Which city you were born?",
+                        "securityAnswer": "Karachi",
+                        "__v": 0
+                    }
+                ]
+            }
+        },
+        "id": {
+            "route": "/api/users/:id",
+            "type": "GET",
+            "auth": "required",
+            "desc": "Get a single user",
+            "response": {
+                "privilege": "regular",
+                "createdAt": 1563682844209,
+                "_id": "5d33e9636f420f13d0ffbddd",
+                "name": "John Doe",
+                "email": "johndoe@gmail.com",
+                "username": "johndoe",
+                "password": "$2a$10$YQJhWgX7R0w74.UyoFKs2.JEcKlUNN0sIkttgi6x5h8Z04HF3P91C",
+                "contact": 92300000000,
+                "securityQuestion": "Which city you were born?",
+                "securityAnswer": "Karachi",
+                "__v": 0
+            }
+        },
+        "delete": {
+            "route": "/api/users/:id",
+            "type": "Delete",
+            "auth": "required",
+            "desc": "Admin Only - Delete a single user",
+            "response": {
+                "success": "User has been deleted"
+            }
+        }
+    }
+}
