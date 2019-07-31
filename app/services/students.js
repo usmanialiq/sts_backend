@@ -1,27 +1,27 @@
 "use strict";
-const Users = require("express").Router();
+const Students = require("express").Router();
 const passport = require("passport");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 // Mongoose Model
-const User = require("../models/User");
+const Student = require("../models/Student");
 const routes = require("../routes");
 
 // @route   GET /api/users
 // @desc    Get all users - admin only
 // @access  Private
-Users.get(
-    routes.users,
+Students.get(
+    routes.students,
     passport.authenticate("jwt", { session: false }),
     (req, res, next) => {
         if (req.user.privilege === "admin") {
-            User.find((err, users) => {
+            Student.find((err, users) => {
                 if (err) {
                     res.status(400).json({ error: err });
                 } else {
                     res.status(200).json({
                         found: users.length,
-                        users: users,
+                        students: users,
                     });
                 }
             });
@@ -36,18 +36,22 @@ Users.get(
 // @route   GET /api/users/:id
 // @desc    Get a user with an id - admin only
 // @access  Private
-Users.get(
-    routes.users + "/:id",
+Students.get(
+    routes.students + "/:id",
     passport.authenticate("jwt", { session: false }),
     (req, res, next) => {
         if (req.user.privilege === "admin") {
             let id = req.params.id;
-            User.find({ _id: ObjectId(id) }, (err, user) => {
+            Student.find({ _id: ObjectId(id) }, (err, user) => {
                 if (err) {
-                    throw new Error({ notFound: "User not found..." });
+                    throw new Error({
+                        notFound: "Student record not found...",
+                    });
                 } else {
                     if (user.length === 0) {
-                        res.status(404).json({ error: "User not found" });
+                        res.status(404).json({
+                            error: "Student record not found",
+                        });
                     } else {
                         res.status(200).json(user[0]);
                     }
@@ -65,13 +69,13 @@ Users.get(
 // @desc    Update a user with id - admin only
 // @access  Private
 // @warn    Privilege can not be altered
-Users.put(
-    routes.users + "/:id",
+Students.put(
+    routes.students + "/:id",
     passport.authenticate("jwt", { session: false }),
     (req, res, next) => {
         if (req.user.privilege === "admin") {
             let id = req.params.id;
-            // User.find({ _id: ObjectId(id) }, err => {
+            // Student.find({ _id: ObjectId(id) }, err => {
             //     if (err) {
             //         throw new Error({ error: "Not allowed" });
             //     } else {
@@ -88,23 +92,25 @@ Users.put(
 // @route   DELETE /api/users/:id
 // @desc    Delete a user with id - admin only
 // @access  Private
-Users.delete(
-    routes.users + "/:id",
+Students.delete(
+    routes.students + "/:id",
     passport.authenticate("jwt", { session: false }),
     (req, res, next) => {
         if (req.user.privilege === "admin") {
             let id = req.params.id;
-            User.remove({ _id: ObjectId(id), privilege: "regular" }, err => {
+            Student.remove({ _id: ObjectId(id) }, err => {
                 if (err) {
                     throw new Error({ error: "Not allowed" });
                 } else {
-                    res.status(200).json({ success: "User has been deleted" });
+                    res.status(200).json({
+                        success: "Student record has been deleted",
+                    });
                 }
             });
         } else {
-            res.status(405).json({ error: "User deletion is not allowed" });
+            res.status(405).json({ error: "Delete not allowed" });
         }
     }
 );
 
-module.exports = Users;
+module.exports = Students;

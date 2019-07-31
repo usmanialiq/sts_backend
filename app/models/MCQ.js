@@ -47,6 +47,11 @@ const McqSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    // student id
+    submittedBy: {
+        type: String,
+        required: true,
+    },
     // teacher id
     createdBy: {
         type: String,

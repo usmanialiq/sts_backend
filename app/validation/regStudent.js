@@ -3,7 +3,7 @@ const Validator = require("validator");
 
 const isEmpty = require("./is-empty");
 
-module.exports = function validateRegisterInput(data) {
+module.exports = function validateRegisterStudentInput(data) {
     let errors = {};
 
     // Making use of empty name field
@@ -11,7 +11,8 @@ module.exports = function validateRegisterInput(data) {
     data.username = !isEmpty(data.username) ? data.username : "";
     data.password = !isEmpty(data.password) ? data.password : "";
     data.password2 = !isEmpty(data.password2) ? data.password2 : "";
-    data.privilege = !isEmpty(data.privilege) ? data.privilege : "";
+    data.rollNo = !isEmpty(data.rollNo) ? data.rollNo : "";
+    data.class = !isEmpty(data.class) ? data.class : "";
 
     // Handling Min and Max character in Name Field
     if (!Validator.isLength(data.name, { min: 2, max: 30 })) {
@@ -46,9 +47,14 @@ module.exports = function validateRegisterInput(data) {
         errors.password2 = "Passwords must match";
     }
 
-    // Handling Empty Answer Field
-    if (Validator.isEmpty(data.privilege)) {
-        errors.privilege = "Privilege is required";
+    // Handling Empty Roll No nswer Field
+    if (Validator.isEmpty(data.rollNo)) {
+        errors.rollNo = "Roll Number is required";
+    }
+
+    // Handling Empty Class Field
+    if (Validator.isEmpty(data.class)) {
+        errors.class = "Class is required";
     }
 
     return {

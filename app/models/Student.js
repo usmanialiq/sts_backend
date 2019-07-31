@@ -1,33 +1,30 @@
 "use strict";
 const mongoose = require("mongoose");
 
-// For dashboard access
-const UserSchema = new mongoose.Schema({
+const StudentSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-    },
-    // only for admin
-    email: {
-        type: String,
     },
     username: {
         type: String,
         required: true,
         unique: true,
     },
-    // only for teacher
-    subject: {
+    rollNo: {
+        type: String,
+    },
+    class: {
         type: String,
     },
     password: {
         type: String,
         required: true,
     },
-    // admin and teacher
     privilege: {
         type: String,
         required: true,
+        default: "student",
     },
     createdAt: {
         type: Number,
@@ -35,6 +32,6 @@ const UserSchema = new mongoose.Schema({
     },
 });
 
-const User = mongoose.model("Users", UserSchema);
+const Student = mongoose.model("Students", StudentSchema);
 
-module.exports = User;
+module.exports = Student;
