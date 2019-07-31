@@ -16,13 +16,11 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(passport.initialize());
-// Configuring passport constructor
 require("./config/passport")(passport);
-require("./config/passportStudent")(passport);
 app.use(cookieParser());
 app.use(helmet());
 app.use(cors());
 
-app.use("/api", router.auth, router.users);
+app.use("/api", router.auth, router.users, router.students);
 
 module.exports = app;

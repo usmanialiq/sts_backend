@@ -34,6 +34,82 @@ Auth.post(routes.register + "/admin", (req, res, next) => {
                     return res.status(403).json({
                         error: "Admin accounts have reached its limit",
                     });
+                } else {
+                    User.find({ username: req.body.username }, (err, user) => {
+                        if (err) {
+                            return res.status(400).json({ error: err });
+                        }
+                        if (user.length > 0) {
+                            errors.username = "Username already exists";
+                            return res.status(400).json(errors);
+                        } else {
+                            // Strong the New User
+                            const newUser = {
+                                name: req.body.name,
+                                username: req.body.username,
+                                password: req.body.password,
+                                password2: req.body.password2,
+                                privilege: req.body.privilege,
+                            };
+                            if (newUser.privilege === "admin") {
+                                newUser.email = req.body.email;
+                                if (
+                                    !newUser.email ||
+                                    newUser.email === ("" || null || undefined)
+                                ) {
+                                    errors.email = "Email is required";
+                                    return res.status(400).json(errors);
+                                }
+                                if (!validator.isEmail(newUser.email)) {
+                                    errors.email = "Not a valid email";
+                                    return res.status(400).json(errors);
+                                }
+                            }
+                            if (newUser.privilege === "teacher") {
+                                newUser.subject = req.body.subject;
+                                if (
+                                    newUser.subject ===
+                                    ("" || null || undefined)
+                                ) {
+                                    errors.subject = "Subject is required";
+                                    return res.status(400).json(errors);
+                                }
+                            }
+                            // Hashing Password
+                            bcrypt.genSalt(10, (err, salt) => {
+                                bcrypt.hash(
+                                    newUser.password,
+                                    salt,
+                                    (err, hash) => {
+                                        if (err) {
+                                            return res
+                                                .status(400)
+                                                .json({ error: err });
+                                        }
+                                        newUser.password = hash;
+                                        // Validating with User Schema
+                                        let regUser = new User(newUser);
+                                        // Saving through Mongoose
+                                        regUser
+                                            .save()
+                                            .then(() => {
+                                                res.status(200).json({
+                                                    success:
+                                                        "Account has been successfully created. Kindly Login!",
+                                                });
+                                            })
+                                            .catch(error => {
+                                                res.status(400).json({
+                                                    error:
+                                                        "Error: Failed to create user.",
+                                                });
+                                                next(error);
+                                            });
+                                    }
+                                );
+                            });
+                        }
+                    });
                 }
             });
         } else {
@@ -55,7 +131,10 @@ Auth.post(routes.register + "/admin", (req, res, next) => {
                     };
                     if (newUser.privilege === "admin") {
                         newUser.email = req.body.email;
-                        if (newUser.email === ("" || null || undefined)) {
+                        if (
+                            !newUser.email ||
+                            newUser.email === ("" || null || undefined)
+                        ) {
                             errors.email = "Email is required";
                             return res.status(400).json(errors);
                         }
@@ -204,6 +283,7 @@ Auth.post(routes.login + "/admin", (req, res, next) => {
                         const payload = {
                             id: user._id,
                             name: user.name,
+                            privilege: user.privilege,
                         }; // Create JWT Payload
                         // Sign Token
                         jwt.sign(
@@ -263,6 +343,7 @@ Auth.post(routes.login + routes.students, (req, res, next) => {
                         const payload = {
                             id: user._id,
                             name: user.name,
+                            privilege: user.privilege,
                         }; // Create JWT Payload
                         // Sign Token
                         jwt.sign(

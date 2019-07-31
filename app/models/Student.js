@@ -13,9 +13,11 @@ const StudentSchema = new mongoose.Schema({
     },
     rollNo: {
         type: String,
+        required: true,
     },
     class: {
         type: String,
+        required: true,
     },
     password: {
         type: String,
